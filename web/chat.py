@@ -8,7 +8,6 @@
   chat.py history [--limit N] [--chars N]  - last N messages (default 30, each cut to 800 chars) - context for a fresh session
   chat.py prune            - drops messages older than 7 days (unhandled ones always stay)
 """
-import fcntl
 import json
 import os
 import sys
@@ -18,10 +17,20 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "lib"))
 from config import DATA  # noqa: E402
 
+try:
+    import fcntl
+except ImportError:  # Windows: no file locks, fine for the single-user demo
+    fcntl = None
+
 CHAT = DATA / "chat.jsonl"
 STATE = DATA / "state.json"
 TRIGGERED = DATA / ".web-triggered"
 KEEP_DAYS = 7
+
+
+def lock(f):
+    if fcntl:
+        fcntl.flock(f, fcntl.LOCK_EX)
 
 
 def messages():
@@ -45,7 +54,7 @@ def append(sender, text, question=False, issue=None):
     if issue:
         msg["issue"] = str(issue).lstrip("#")
     with open(CHAT, "a", encoding="utf-8") as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
+        lock(f)
         f.write(json.dumps(msg, ensure_ascii=False) + "\n")
     return msg
 
@@ -71,11 +80,14 @@ def pending(only_new=False):
 
 
 def done(ts):
-    state = json.loads(STATE.read_text(encoding="utf-8"))
-    state.setdefault("web", {})["lastTs"] = ts
-    tmp = STATE.with_suffix(".web.tmp")
-    tmp.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    os.replace(tmp, STATE)
+    # same lock file as bin/state-jq.sh, so concurrent state writers don't overwrite each other
+    with open(str(STATE) + ".lock", "a") as lk:
+        lock(lk)
+        state = json.loads(STATE.read_text(encoding="utf-8"))
+        state.setdefault("web", {})["lastTs"] = ts
+        tmp = STATE.with_suffix(".web.tmp")
+        tmp.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        os.replace(tmp, STATE)
 
 
 def history(limit=30, chars=800):
@@ -95,7 +107,7 @@ def prune():
     cutoff = time.time() - KEEP_DAYS * 86400
     handled = last_handled()
     with open(CHAT, "r+", encoding="utf-8") as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
+        lock(f)
         lines = f.read().splitlines()
         keep = []
         for line in lines:
@@ -108,9 +120,10 @@ def prune():
                 keep.append(line)
         if len(keep) == len(lines):
             return 0
-        tmp = CHAT.with_suffix(".prune.tmp")
-        tmp.write_text("".join(x + "\n" for x in keep), encoding="utf-8")
-        os.replace(tmp, CHAT)
+        # rewrite in place: a writer waiting on the lock keeps appending to the same file
+        f.seek(0)
+        f.write("".join(x + "\n" for x in keep))
+        f.truncate()
     return len(lines) - len(keep)
 
 

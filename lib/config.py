@@ -23,6 +23,7 @@ def _load():
 
 CFG = _load()
 DATA = expand(os.environ.get("TICKET_PILOT_DATA") or CFG.get("dataDir", "~/.ticket-pilot"))
+DATA.mkdir(parents=True, exist_ok=True)
 DEMO = os.environ.get("TICKET_PILOT_DEMO") == "1"
 PROJECTS = CFG.get("projects", {})
 TRACKER = CFG.get("tracker", {})

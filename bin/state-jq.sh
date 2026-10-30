@@ -3,6 +3,8 @@
 set -euo pipefail
 source "$(dirname "$0")/common.sh"
 F="$DATA/state.json"
+exec 8>"$F.lock"
+flock -w 30 8   # one writer at a time (parallel subagents, chat.py done)
 [ -f "$F" ] || echo '{}' > "$F"
 TMP=$(mktemp "$F.XXXX")
 trap 'rm -f "$TMP"' EXIT

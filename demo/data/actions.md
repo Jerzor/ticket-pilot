@@ -1,4 +1,4 @@
-- 2026-10-30 09:15 | #1159 | status Ready for QA + tester assigned, 6 h logged | https://redmine.example.com/issues/1159
+- 2026-10-30 09:15 | #1159 | status Ready for QA + tester assigned, 6 h logged (mark all as read) | https://redmine.example.com/issues/1159
 - 2026-10-30 10:02 | #1203 | analysis done (2 agents, 92% agreement), estimate 5 h sent | analyses/1203.md
 - 2026-10-30 11:31 | #1187 | contract read from backend branch: renamed field promoCode -> code, review OK, push | https://gitlab.example.com/acme/customer-portal/-/merge_requests/214
 - 2026-10-30 13:46 | #1190 | implementation done (tsc, eslint-new, build, specs green), commit 4f2a91c | 

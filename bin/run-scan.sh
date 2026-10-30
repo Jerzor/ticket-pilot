@@ -22,8 +22,10 @@ while read -r repo; do
 done < <(jq -r '.projects[].repo' "$CONFIG")
 
 cd "$(expand "$(cfg .workspace)")" || exit 1
+# manual pause: touch <dataDir>/.paused (remove the file to resume)
+[ -e "$DATA/.paused" ] && { echo "- $(date '+%F %H:%M') skipped: paused manually" >> "$LOG"; exit 0; }
 exec 9>"$DATA/.lock"
-flock -w 60 9 || { echo "- $(date '+%F %H:%M') skipped: previous run still in progress" >> "$LOG"; exit 0; }
+flock -w 60 9 || { echo "- $(date '+%F %H:%M') skipped: previous run still in progress" >> "$LOG"; exit 73; }
 
 # start/end/exit code for the dashboard - written by this script, independent of what Claude reports
 START=$(date '+%F %H:%M')
@@ -48,6 +50,7 @@ LIMIT_RE='usage limit|rate.?limit|limit reached|hit your limit|limit will reset|
   fi
   rm -f "$DATA/.limit-killed"
   (
+    exec 9>&-
     while sleep 30; do
       WHY=$(python3 "$ROOT/guard/limit-check.py" watch) && continue
       echo "$WHY" > "$DATA/.limit-killed"
@@ -60,7 +63,7 @@ LIMIT_RE='usage limit|rate.?limit|limit reached|hit your limit|limit will reset|
   JSON=$(timeout "$(cfg .claude.timeout)" "$CLAUDE" -p "${1:-/ticket-pilot (cron run, no user at the terminal)}
 
 [run start by the clock: $START - use this time in log.md, status.txt and checkedAt; any later time only from \`date\`]" \
-    --model "$(cfg .claude.model)" --chrome --allowedTools "${ALLOWED[@]}" --output-format json < /dev/null 2>"$DATA/.last-stderr")
+    --model "$(cfg .claude.model)" --chrome --allowedTools "${ALLOWED[@]}" --output-format json < /dev/null 2>"$DATA/.last-stderr" 9>&-)
   rc=$?
   kill $GUARD 2>/dev/null
   if [ -e "$DATA/.limit-killed" ]; then
@@ -108,3 +111,4 @@ fi
 echo "$START|$(date '+%F %H:%M')|$rc" > "$DATA/.last-scan"
 [ $rc -ne 77 ] && rm -f "$DATA/.vpn-down"
 python3 "$ROOT/web/dashboard.py" 2>/dev/null
+exit $rc

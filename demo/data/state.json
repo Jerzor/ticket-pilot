@@ -32,39 +32,39 @@
       "branch": "feature/1190-order-filters",
       "branchPushed": false
     },
-    "1176": {
-      "title": "Account lock modal after failed verification attempts",
-      "project": "ADMIN",
-      "status": "In Progress",
-      "estimated": 10.0,
-      "spent": 8.5,
-      "branch": "feature/1170-verification-popup",
-      "branchPushed": true,
-      "draftMr": 87,
-      "openQuestions": [
-        {
-          "q": "final copy of the pop-up texts",
-          "to": "business",
-          "assumption": "working texts from the issue",
-          "askedAt": "2026-10-28 15:35"
-        }
-      ]
-    },
-    "1159": {
-      "title": "Dashboard tiles - hide blocked features",
-      "project": "ADMIN",
-      "status": "Ready for QA",
-      "estimated": 6.0,
-      "spent": 6.0,
-      "branch": "feature/1158-access-block",
-      "branchPushed": true
-    },
     "1203": {
       "title": "Profile - upload avatar with crop",
       "project": "WEB",
       "status": "New",
       "estimated": 5.0,
       "waitingFor": "estimate to accept: take 1203?"
+    },
+    "1176": {
+      "title": "Invoices list - export to CSV with current filters",
+      "project": "ADMIN",
+      "status": "In Progress",
+      "estimated": 10.0,
+      "spent": 8.5,
+      "branch": "feature/1176-invoice-export",
+      "branchPushed": true,
+      "draftMr": 87,
+      "openQuestions": [
+        {
+          "q": "which columns go to the export",
+          "to": "business",
+          "assumption": "the columns visible in the table",
+          "askedAt": "2026-10-28 15:35"
+        }
+      ]
+    },
+    "1159": {
+      "title": "Notifications - mark all as read",
+      "project": "ADMIN",
+      "status": "Ready for QA",
+      "estimated": 6.0,
+      "spent": 6.0,
+      "branch": "bugfix/1159-mark-all-read",
+      "branchPushed": true
     }
   },
   "inProgress": {

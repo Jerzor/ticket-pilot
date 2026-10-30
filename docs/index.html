@@ -22,7 +22,7 @@ th{font-size:12px;color:var(--muted);font-weight:600;border-top:0}.num{white-spa
 .steps li.done{background:var(--okbg);color:var(--ok);border-color:transparent}.steps li.now{background:var(--runbg);color:var(--run);border-color:var(--run);font-weight:600}
 ul.feed{list-style:none;margin:0;padding:0}ul.feed li{padding:6px 0;border-top:1px solid var(--line)}ul.feed li:first-child{border-top:0}
 time{font-variant-numeric:tabular-nums;color:var(--muted);margin-right:6px}.iss{font-weight:600;margin-right:4px}
-.grid{display:grid;grid-template-columns:2fr 1fr;gap:14px}@media (max-width:820px){.grid{grid-template-columns:1fr}.title{max-width:none}}
+main,.grid{grid-template-columns:minmax(0,1fr)}.grid{display:grid;gap:14px}@media (min-width:821px){.grid{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}}@media (max-width:820px){.title{max-width:none}}
 .tablewrap{overflow-x:auto}.big{font-size:22px;font-weight:600}
 .health{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px}@media (max-width:820px){.health{grid-template-columns:1fr}}
 ul.checks{list-style:none;margin:0;padding:0}ul.checks li{padding:4px 0}
@@ -39,15 +39,15 @@ form#send{display:flex;gap:8px;align-items:flex-end}
 textarea{flex:1;font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);resize:vertical}
 button{font:inherit;font-weight:600;padding:8px 16px;border-radius:8px;border:0;background:var(--run);color:var(--card);cursor:pointer}details pre{white-space:pre-wrap;font-size:12.5px;margin:8px 0 0}
 </style></head><body><main>
-<div class="card muted">Demo with fictional data - a static snapshot of the dashboard. Source and docs: <a href="https://github.com/Jerzor/ticket-pilot">github.com/Jerzor/ticket-pilot</a></div>
+<div class="card muted">Demo with fictional data - a static snapshot of the dashboard. Issue and MR links point to example.com. Source and docs: <a href="https://github.com/Jerzor/ticket-pilot">github.com/Jerzor/ticket-pilot</a></div>
 <div class="card top"><h1>Ticket Pilot</h1><span class="banner run">● Working: scan — #1190 (review)</span>
-<span class="muted"><b>last scan: 13:45–13:52 (7 min) — OK</b><br>last scan: 2026-10-30 13:45 - OK (1 change)<br>next scan 16:00 · refreshed 15:54:18</span></div>
+<span class="muted"><b>last scan: 13:45–13:52 (7 min) — OK</b><br>last scan: 2026-10-30 13:45 - OK (1 change)<br>next scan 14:30 · refreshed 13:52:00</span></div>
 
-<div class="card"><h2>Health <span class="muted">checked 15:54:18</span></h2><div class="health">
+<div class="card"><h2>Health <span class="muted">checked 13:52:00</span></h2><div class="health">
 <ul class="checks"><li><span class="dot ok"></span>Redmine <span class="muted">HTTP 302</span></li><li><span class="dot ok"></span>GitLab <span class="muted">HTTP 302</span></li><li><span class="dot ok"></span>API docs WEB <span class="muted">HTTP 200</span></li><li><span class="dot ok"></span>API docs ADMIN <span class="muted">HTTP 200</span></li><li><span class="dot ok"></span>Cron <span class="muted">on (4 entries)</span></li></ul><div><div class="meter"><div class="mrow"><b>Session limit (5 h)</b><span class="num">18%</span></div>
 <div class="bar"><i class="ok" style="width:18%"></i></div><div class="muted">resets 18:17</div></div><div class="meter"><div class="mrow"><b>Weekly limit</b><span class="num">41%</span></div>
 <div class="bar"><i class="ok" style="width:41%"></i></div><div class="muted">resets Sun 01.11 19:05</div></div><div class="meter"><div class="mrow"><b>Extra usage (month)</b><span class="num">0%</span></div>
-<div class="bar"><i class="ok" style="width:0%"></i></div><div class="muted">0.00 / 25.00 EUR</div></div><div class="muted">Claude counter from 15:54</div></div></div></div>
+<div class="bar"><i class="ok" style="width:0%"></i></div><div class="muted">0.00 / 50.00 USD</div></div><div class="muted">Claude counter from 13:52</div></div></div></div>
 <div class="card"><h2>Working on: <a href="https://redmine.example.com/issues/1190" target="_blank" rel="noopener">#1190</a> <code>feature/1190-order-filters</code><span class="muted"> · since 2026-10-30 13:46</span></h2>
 <ol class="steps"><li class="done">code</li><li class="now">code review</li><li class="">push</li><li class="">draft MR</li><li class="">merge main</li><li class="">devel</li><li class="">devel pipeline</li><li class="">main</li><li class="">main pipeline</li><li class="">time log</li><li class="">to QA</li></ol><div class="muted">reviewer: 3 findings, author accepted 3/3 (100%), fixes in progress</div></div>
 <div class="card" id="chat"><h2>Conversation</h2><ul class="chat"><li class="bot"><time>10:02</time><span class="iss">#1203</span> <div class="msg">#1203 avatar upload: 2 agents agree (92%), estimate 5 h. frontend only, no backend needed.
@@ -84,17 +84,17 @@ Reply: take 1203 / accept 1203 [h] / change …</div></li>
 </tr>
 <tr class="wait">
 <td><a href="https://redmine.example.com/issues/1176" target="_blank" rel="noopener">#1176</a><div class="muted">ADMIN</div></td>
-<td class="title">Account lock modal after failed verification attempts</td>
+<td class="title">Invoices list - export to CSV with current filters</td>
 <td><span class="pill wait">In Progress</span></td>
-<td><code>feature/1170-verification-popup</code> <a href="https://gitlab.example.com/acme/admin-panel/-/merge_requests/87" target="_blank" rel="noopener">!87</a></td>
+<td><code>feature/1176-invoice-export</code> <a href="https://gitlab.example.com/acme/admin-panel/-/merge_requests/87" target="_blank" rel="noopener">!87</a></td>
 <td class="num">8.5 / 10 h</td>
-<td>answer (business): final copy of the pop-up texts</td>
+<td>answer (business): which columns go to the export</td>
 </tr>
 <tr class="ok">
 <td><a href="https://redmine.example.com/issues/1159" target="_blank" rel="noopener">#1159</a><div class="muted">ADMIN</div></td>
-<td class="title">Dashboard tiles - hide blocked features</td>
+<td class="title">Notifications - mark all as read</td>
 <td><span class="pill ok">Ready for QA</span></td>
-<td><code>feature/1158-access-block</code> </td>
+<td><code>bugfix/1159-mark-all-read</code> </td>
 <td class="num">6 / 6 h</td>
 <td><span class="muted">—</span></td>
 </tr></table></div></div>
@@ -102,13 +102,13 @@ Reply: take 1203 / accept 1203 [h] / change …</div></li>
 <div class="card"><h2>Today (30.10)</h2><ul class="feed"><li><time>13:46</time> <span class="iss">#1190</span> implementation done (tsc, eslint-new, build, specs green), commit 4f2a91c </li>
 <li><time>11:31</time> <span class="iss">#1187</span> contract read from backend branch: renamed field promoCode -&gt; code, review OK, push <a href="https://gitlab.example.com/acme/customer-portal/-/merge_requests/214" target="_blank" rel="noopener">↗</a></li>
 <li><time>10:02</time> <span class="iss">#1203</span> analysis done (2 agents, 92% agreement), estimate 5 h sent analyses/1203.md</li>
-<li><time>09:15</time> <span class="iss">#1159</span> status Ready for QA + tester assigned, 6 h logged <a href="https://redmine.example.com/issues/1159" target="_blank" rel="noopener">↗</a></li></ul>
+<li><time>09:15</time> <span class="iss">#1159</span> status Ready for QA + tester assigned, 6 h logged (mark all as read) <a href="https://redmine.example.com/issues/1159" target="_blank" rel="noopener">↗</a></li></ul>
 <details><summary class="muted" style="margin-top:12px">last report from log.md</summary><pre>## 2026-10-30 13:45
 Scan 13:45: 1 change.
 
 - **#1190 (WEB):** implementation finished per analyses/1190.md, code review running (3 findings, all accepted).
 - **#1187 (WEB):** waiting for backend #1188 - branch exists in the mirror, not merged to main yet.
-- **#1176 (ADMIN):** draft MR !87, waiting for the final pop-up copy (business).
+- **#1176 (ADMIN):** draft MR !87, waiting for business to confirm the export columns.
 - **Limit:** session 18%, week 41%.
 
 QUESTIONS FOR THE USER: none.</pre></details></div>

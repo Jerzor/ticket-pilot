@@ -3,7 +3,7 @@
 
   limit-check.py start  - before a run: exit 1 when the 5-hour or weekly limit >= limits.startBelow; stores extra usage as a baseline
   limit-check.py watch  - during a run: exit 1 when a limit >= limits.killAt (margin so 100% is never crossed) or extra usage grew since start
-  limit-check.py status - for the agent session: prints usage in %, writes nothing
+  limit-check.py status - for the agent session: prints usage in % (may refresh the shared cache, nothing else)
 Exit 0 = OK to work. When the counter is unavailable (network, token, 429): start retries for 90 s, then exit 2 (skip the run);
 watch fails closed (exit 1 = kill).
 """
@@ -63,7 +63,7 @@ def main(mode):
         if not u:
             print("usage counter unavailable")
             return 0
-        print(f"session 5h {(u.get('five_hour') or {}).get('utilization', 0):.0f}% · week {(u.get('seven_day') or {}).get('utilization', 0):.0f}%")
+        print(f"session 5h {(u.get('five_hour') or {}).get('utilization') or 0:.0f}% · week {(u.get('seven_day') or {}).get('utilization') or 0:.0f}%")
         return 0
     for _ in range(3 if mode == "start" else 0):
         if u:

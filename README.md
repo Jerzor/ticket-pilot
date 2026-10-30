@@ -55,7 +55,7 @@ Every run is a **fresh, non-interactive Claude Code session** (`claude -p --chro
 | **Agents make up timestamps** | Shell scripts own the clock: run start/end and `checkedAt` are written by `run-scan.sh`, not by the model. |
 | **Background subagents can't ask for permission** | A strict tool allowlist plus a few purpose-built scripts (`state-jq.sh` for atomic state updates, `eslint-new.sh` for "only new lint errors") so agents never need a command that would be denied. |
 | **Cost** | The coordinating session runs on a cheaper model; only analysis, coding, review and arbitration go to the strongest model. An empty scan costs about $0.30. |
-| **Talking to the agent away from the desk** | A token-protected web page on the LAN: live status, issues, today's actions, limits, and a chat. Messages are picked up every minute, 24/7, with zero tokens spent while there are none. |
+| **Talking to the agent away from the desk** | A token-protected web page (localhost by default, LAN with `web.host: 0.0.0.0`): live status, issues, today's actions, limits, and a chat. Messages are picked up every minute, 24/7, with zero tokens spent while there are none. |
 | **Human stays in control** | The agent never starts work without "take &lt;nr&gt;", never sends messages to colleagues (it drafts them), never comments in the tracker, never force-pushes and never merges while business/backend questions are open. |
 
 ## Tech stack
@@ -99,7 +99,7 @@ docs/                  GitHub Pages: the static demo (index.html) and the screen
 | I want to… | How |
 | --- | --- |
 | see what it looks like | open the [live demo](https://jerzor.github.io/ticket-pilot/) - nothing to install |
-| click around, try the chat | run the local demo below (Python 3 only, macOS / Linux / Windows) |
+| click around, try the chat | run the local demo below (Python 3 only, macOS / Linux) |
 | understand how the agent thinks | read [`skill/SKILL.md`](skill/SKILL.md) and [`skill/refs/`](skill/refs) - the agent's full instructions |
 | see the orchestration | [`bin/run-scan.sh`](bin/run-scan.sh) and [`guard/limit-check.py`](guard/limit-check.py) |
 | run it on my own projects | Linux + the setup in [Running it for real](#running-it-for-real); expect to adapt `skill/` to your tracker and release process |
@@ -110,7 +110,7 @@ No tracker, GitLab or Claude account needed - only Python 3 (standard library):
 
 ```bash
 # static dashboard
-python3 web/dashboard.py --demo && open demo/dashboard.html   # Linux: xdg-open
+python3 web/dashboard.py --demo && open demo/dashboard.html   # Linux: xdg-open; the same page is in docs/index.html
 
 # dashboard + working chat (runs on a temporary copy of the demo data)
 python3 web/server.py --demo --port 8799                      # open the printed URL
@@ -124,10 +124,18 @@ Requirements: Linux (`flock`, `notify-send`, cron, systemd), Claude Code with Cl
 
 ```bash
 cp config.example.json config.json      # tracker URL, projects -> repos, release flow, testers, limits
-bin/install-skill.sh                    # installs the skill as /ticket-pilot
-crontab -e                              # see deploy/crontab.example
+bin/install-skill.sh                    # installs the skill as /ticket-pilot, creates the data directory
+
+# backend mirrors (one per project, name = projects.<KEY>.backendMirror) - bare and blobless, fetched by the agent
+git clone --bare --filter=blob:none <backend repo URL> ~/.ticket-pilot/be-web.git
+
+crontab -e                              # paste deploy/crontab.example with /path/to/ticket-pilot replaced
+
+# web dashboard: first replace the path in ExecStart, then
 cp deploy/ticket-pilot-web.service ~/.config/systemd/user/ && systemctl --user enable --now ticket-pilot-web
 ```
+
+Pause everything with `touch ~/.ticket-pilot/.paused` (remove the file to resume). The access token for the web page is in `~/.ticket-pilot/.web-token`.
 
 The skill is written for a Redmine + GitLab + Angular setup with two release flows (`direct`: devel and main at once; `two-stage`: QA on devel, main and a manual deploy after acceptance). Adapting it to another tracker is mostly a matter of editing `skill/`.
 

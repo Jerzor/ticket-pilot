@@ -40,6 +40,16 @@ DONE_STATUSES = {STATUSES.get("testing"), STATUSES.get("resolved")}
 e = html.escape
 
 
+def clock():
+    """Real time; in the demo the moment the last scan ended, so the snapshot is consistent on any day."""
+    if DEMO:
+        try:
+            return dt.datetime.strptime((DATA / ".last-scan").read_text().strip().split("|")[1], "%Y-%m-%d %H:%M")
+        except (OSError, IndexError, ValueError):
+            pass
+    return dt.datetime.now()
+
+
 def read(name, default=""):
     try:
         return (DATA / name).read_text(encoding="utf-8")
@@ -126,7 +136,7 @@ def mr_links(proj, it):
 def issue_rows(state):
     rows = []
     ip_id = str((state.get("inProgress") or {}).get("id") or "")
-    for nr, it in sorted(state.get("issues", {}).items(), key=lambda kv: kv[0], reverse=True):
+    for nr, it in sorted(state.get("issues", {}).items(), key=lambda kv: int(kv[0]) if kv[0].isdigit() else 0, reverse=True):
         proj = it.get("project", "")
         status = it.get("status", "")
         if nr == ip_id and status in ("", STATUSES.get("open")):
@@ -185,7 +195,7 @@ def last_report():
 
 
 DEMO_NOTE = """<div class="card muted">Demo with fictional data - a static snapshot of the dashboard. \
-Source and docs: <a href="https://github.com/Jerzor/ticket-pilot">github.com/Jerzor/ticket-pilot</a></div>"""
+Issue and MR links point to example.com. Source and docs: <a href="https://github.com/Jerzor/ticket-pilot">github.com/Jerzor/ticket-pilot</a></div>"""
 
 HEALTH = DATA / ".health.json"
 CHECKS = [(TRACKER.get("name", "Tracker"), TRACKER.get("url", "").rstrip("/") + "/", "403 = no VPN"),
@@ -218,7 +228,7 @@ def health():
         cached = json.loads(HEALTH.read_text())
     except (OSError, ValueError):
         cached = {}
-    now = dt.datetime.now().timestamp()
+    now = clock().timestamp()
     if DEMO:
         return dict(cached, at=now, usage_at=now)
     if now - cached.get("at", 0) < 60:
@@ -257,7 +267,7 @@ def reset_at(iso):
         t = dt.datetime.fromisoformat(iso).astimezone()
     except (TypeError, ValueError):
         return ""
-    return t.strftime("%H:%M") if t.date() == dt.date.today() else t.strftime("%a %d.%m %H:%M")
+    return t.strftime("%H:%M") if t.date() == clock().date() else t.strftime("%a %d.%m %H:%M")
 
 
 def meter(label, pct, sub):
@@ -277,7 +287,7 @@ def last_scan():
         a, b = (dt.datetime.strptime(x, "%Y-%m-%d %H:%M") for x in (start, end))
     except ValueError:
         return "last scan: no data"
-    day = "" if a.date() == dt.date.today() else f"{a:%d.%m} "
+    day = "" if a.date() == clock().date() else f"{a:%d.%m} "
     why = SCAN_RC.get(int(rc), f"error (code {rc})")
     return f"last scan: {day}{a:%H:%M}–{b:%H:%M} ({int((b - a).total_seconds() // 60)} min) — {why}"
 
@@ -305,7 +315,7 @@ def health_card():
             meters.append(meter("Extra usage (month)", ex.get("utilization"),
                                 f'{ex.get("used_credits", 0) / d:.2f} / {ex.get("monthly_limit", 0) / d:.2f} {e(ex.get("currency", ""))}'))
         claude = "".join(meters)
-        age = (dt.datetime.now().timestamp() - h.get("usage_at", 0)) / 60
+        age = (clock().timestamp() - h.get("usage_at", 0)) / 60
         stale = f' — <b class="bad">STALE reading ({age:.0f} min), counter not responding</b>' if age > 15 else ""
         claude += f'<div class="muted">Claude counter from {dt.datetime.fromtimestamp(h.get("usage_at", 0)):%H:%M}{stale}</div>'
     else:
@@ -327,7 +337,7 @@ def chat_card(web):
     items = []
     for i, m in enumerate(msgs):
         t = dt.datetime.fromtimestamp(float(m["ts"]))
-        when = t.strftime("%H:%M") if t.date() == dt.date.today() else t.strftime("%d.%m %H:%M")
+        when = t.strftime("%H:%M") if t.date() == clock().date() else t.strftime("%d.%m %H:%M")
         user = m.get("from") == "user"
         cls = "me" if user else "bot"
         if user and float(m["ts"]) > handled:
@@ -359,14 +369,12 @@ def main():
 
 
 def render(web=False):
-    now = dt.datetime.now()
+    now = clock()
     today = now.strftime("%Y-%m-%d")
     try:
         state = json.loads(read("state.json", "{}"))
     except json.JSONDecodeError:
         state = {}
-    if DEMO:
-        today = (state.get("checkedAt") or today)[:10]  # demo data is a snapshot of one day
     procs = running()
     limit = read(".limit-hit").strip()
     paused = (DATA / ".paused").exists()
@@ -414,7 +422,7 @@ th{{font-size:12px;color:var(--muted);font-weight:600;border-top:0}}.num{{white-
 .steps li.done{{background:var(--okbg);color:var(--ok);border-color:transparent}}.steps li.now{{background:var(--runbg);color:var(--run);border-color:var(--run);font-weight:600}}
 ul.feed{{list-style:none;margin:0;padding:0}}ul.feed li{{padding:6px 0;border-top:1px solid var(--line)}}ul.feed li:first-child{{border-top:0}}
 time{{font-variant-numeric:tabular-nums;color:var(--muted);margin-right:6px}}.iss{{font-weight:600;margin-right:4px}}
-.grid{{display:grid;grid-template-columns:2fr 1fr;gap:14px}}@media (max-width:820px){{.grid{{grid-template-columns:1fr}}.title{{max-width:none}}}}
+main,.grid{{grid-template-columns:minmax(0,1fr)}}.grid{{display:grid;gap:14px}}@media (min-width:821px){{.grid{{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}}}}@media (max-width:820px){{.title{{max-width:none}}}}
 .tablewrap{{overflow-x:auto}}.big{{font-size:22px;font-weight:600}}
 .health{{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px}}@media (max-width:820px){{.health{{grid-template-columns:1fr}}}}
 ul.checks{{list-style:none;margin:0;padding:0}}ul.checks li{{padding:4px 0}}

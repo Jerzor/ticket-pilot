@@ -1,5 +1,6 @@
 # systemd --user unit for the web dashboard + chat
-# install: cp deploy/ticket-pilot-web.service ~/.config/systemd/user/ && systemctl --user enable --now ticket-pilot-web
+# install: replace %h/path/to/ticket-pilot below with the real path, then
+#   cp deploy/ticket-pilot-web.service ~/.config/systemd/user/ && systemctl --user enable --now ticket-pilot-web
 [Unit]
 Description=Ticket Pilot web dashboard
 

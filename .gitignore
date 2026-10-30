@@ -4,3 +4,4 @@ config.json
 __pycache__/
 *.tmp
 demo/data/.health.json.tmp
+demo/dashboard.html

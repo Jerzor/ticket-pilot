@@ -39,7 +39,7 @@ One run = one session, work **strictly in sequence, never two implementations at
 5. Implementation from `workQueue` in "take" order (FIFO; the user may reorder: "first <nr>"). The next one starts only when the previous one is pushed after review.
 6. Analysis of new issues (refs/analysis.md) - **one at a time, top of the tracker list first**, each finished (analysis file + state + result in the web chat with "take <nr>?") before the next.
 
-**Claude limit before starting work** (`{{ROOT}}/guard/limit-check.py status` right before):
+**Claude limit before starting work** (`python3 {{ROOT}}/guard/limit-check.py status` right before):
 - new implementation only when the 5-hour session < `limits.newImplementationBelow` %; otherwise keep it queued and tell the user when it will start;
 - new analysis only when the session < `limits.newAnalysisBelow` %;
 - weekly ≥ `limits.weeklyOnlyFinishFrom` % → no new analyses or implementations, only finishing, releases and time log;

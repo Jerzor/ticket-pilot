@@ -1,0 +1,5 @@
+{"ts": "1793350920.000000", "from": "agent", "text": "#1203 avatar upload: 2 agents agree (92%), estimate 5 h. frontend only, no backend needed.\nReply: take 1203 / accept 1203 [h] / change \u2026", "question": true, "issue": "1203"}
+{"ts": "1793351400.000000", "from": "user", "text": "take 1190 first, 1203 after the weekend"}
+{"ts": "1793351460.000000", "from": "agent", "text": "ok - 1190 starts now (limit 12%), 1203 queued behind it.", "issue": "1190"}
+{"ts": "1793356200.000000", "from": "user", "text": "answer from backend for 1187: field is `code`, max 20 chars, 422 when expired"}
+{"ts": "1793356320.000000", "from": "agent", "text": "1187 updated: field renamed to `code`, maxlength 20, 422 -> 'This code has expired'. review OK, pushed (!214). still waiting for backend merge.", "issue": "1187"}

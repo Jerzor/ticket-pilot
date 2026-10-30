@@ -1,0 +1,75 @@
+{
+  "dataDir": "~/.ticket-pilot",
+  "workspace": "~/code",
+
+  "tracker": {
+    "name": "Redmine",
+    "url": "https://redmine.example.com",
+    "issuePath": "/issues/",
+    "myPage": "/my/page",
+    "healthPath": "/login",
+    "statuses": {
+      "open": "New",
+      "inProgress": "In Progress",
+      "testing": "Ready for QA",
+      "deploy": "Ready to Deploy",
+      "resolved": "Resolved"
+    }
+  },
+
+  "gitHost": "https://gitlab.example.com",
+
+  "projects": {
+    "WEB": {
+      "trackerProject": "Customer Portal",
+      "repo": "~/code/customer-portal",
+      "gitlab": "https://gitlab.example.com/acme/customer-portal",
+      "backendMirror": "be-web.git",
+      "apiDocs": "https://portal.example.com/api/doc",
+      "tester": "QA team (web)",
+      "releaseFlow": "direct",
+      "specs": true
+    },
+    "ADMIN": {
+      "trackerProject": "Admin Panel",
+      "repo": "~/code/admin-panel",
+      "gitlab": "https://gitlab.example.com/acme/admin-panel",
+      "backendMirror": "be-admin.git",
+      "apiDocs": "https://admin.example.com/api/doc",
+      "tester": "QA team (admin)",
+      "releaseFlow": "two-stage",
+      "specs": false
+    }
+  },
+
+  "schedule": {
+    "scans": ["08:30", "09:15", "10:00", "10:45", "11:30", "12:15", "13:00", "13:45", "14:30", "15:15", "16:00", "17:00"],
+    "timeLogAt": "17:00",
+    "timeLogRetryAt": "21:00"
+  },
+
+  "workday": {
+    "start": "09:00",
+    "hours": 7
+  },
+
+  "claude": {
+    "bin": "~/.local/bin/claude",
+    "model": "sonnet",
+    "workerModel": "opus",
+    "timeout": "3h"
+  },
+
+  "limits": {
+    "startBelow": 93,
+    "killAt": 97,
+    "newImplementationBelow": 65,
+    "newAnalysisBelow": 85,
+    "weeklyOnlyFinishFrom": 90
+  },
+
+  "web": {
+    "host": "127.0.0.1",
+    "port": 8765
+  }
+}

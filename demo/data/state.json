@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-10-30 13:45",
+  "hoursFilledFor": "",
+  "issues": {
+    "1187": {
+      "title": "Checkout - promo code field with live validation",
+      "project": "WEB",
+      "status": "In Progress",
+      "estimated": 6.0,
+      "spent": 3.5,
+      "branch": "feature/1187-promo-code",
+      "branchPushed": true,
+      "draftMr": 214,
+      "beTask": 1188,
+      "beTaskStatus": "In Progress",
+      "waitingForBe": true,
+      "openQuestions": [],
+      "related": [
+        {
+          "id": 1190,
+          "relation": "shared files",
+          "note": "checkout.component.ts"
+        }
+      ]
+    },
+    "1190": {
+      "title": "Order history - filters by date and status",
+      "project": "WEB",
+      "status": "In Progress",
+      "estimated": 8.0,
+      "spent": 0,
+      "branch": "feature/1190-order-filters",
+      "branchPushed": false
+    },
+    "1176": {
+      "title": "Account lock modal after failed verification attempts",
+      "project": "ADMIN",
+      "status": "In Progress",
+      "estimated": 10.0,
+      "spent": 8.5,
+      "branch": "feature/1170-verification-popup",
+      "branchPushed": true,
+      "draftMr": 87,
+      "openQuestions": [
+        {
+          "q": "final copy of the pop-up texts",
+          "to": "business",
+          "assumption": "working texts from the issue",
+          "askedAt": "2026-10-28 15:35"
+        }
+      ]
+    },
+    "1159": {
+      "title": "Dashboard tiles - hide blocked features",
+      "project": "ADMIN",
+      "status": "Ready for QA",
+      "estimated": 6.0,
+      "spent": 6.0,
+      "branch": "feature/1158-access-block",
+      "branchPushed": true
+    },
+    "1203": {
+      "title": "Profile - upload avatar with crop",
+      "project": "WEB",
+      "status": "New",
+      "estimated": 5.0,
+      "waitingFor": "estimate to accept: take 1203?"
+    }
+  },
+  "inProgress": {
+    "id": 1190,
+    "project": "WEB",
+    "branch": "feature/1190-order-filters",
+    "step": "review",
+    "since": "2026-10-30 13:46",
+    "details": "reviewer: 3 findings, author accepted 3/3 (100%), fixes in progress"
+  },
+  "workQueue": [],
+  "releaseQueue": [],
+  "web": {
+    "lastTs": "1793356200.000000"
+  }
+}

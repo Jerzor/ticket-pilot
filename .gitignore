@@ -1,0 +1,6 @@
+# local config and runtime data (never commit: tracker URLs, tokens, issue data)
+config.json
+.ticket-pilot/
+__pycache__/
+*.tmp
+demo/data/.health.json.tmp

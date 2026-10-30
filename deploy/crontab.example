@@ -1,0 +1,11 @@
+# Ticket Pilot - install with: crontab -e (replace /path/to/ticket-pilot)
+# Scans every 45 min on weekdays + the time log run at 17:00
+30 8,11,14 * * 1-5 /path/to/ticket-pilot/bin/run-scan.sh
+15 9,12,15 * * 1-5 /path/to/ticket-pilot/bin/run-scan.sh
+0 10,13,16,17 * * 1-5 /path/to/ticket-pilot/bin/run-scan.sh
+45 10,13 * * 1-5 /path/to/ticket-pilot/bin/run-scan.sh
+# evening retry of the time log (exits without Claude when 17:00 already did it)
+0 21 * * 1-5 /path/to/ticket-pilot/bin/evening-time-log.sh
+# dashboard (no tokens) and web chat polling (no tokens unless there is a message)
+* * * * * /usr/bin/python3 /path/to/ticket-pilot/web/dashboard.py 2>/dev/null
+* * * * * /path/to/ticket-pilot/bin/web-poll.sh
